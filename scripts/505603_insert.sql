@@ -7,7 +7,7 @@ values
     ('Anna Smirnova', 'anna.smirnova@example.com'),
     ('Petr Ivanov', 'petr.ivanov@example.com'),
     ('Olga Sidorova', 'olga.sidorova@example.com')
-RETURNING id, name, email;
+returning id, name, email;
 
 select id, name, email, created_at
 from users
@@ -19,13 +19,13 @@ values
     ('MacBook Air M5', 149990.00, true),
     ('AirPods Pro 2', 24990.00, true),
     ('Old Keyboard', 1500.00, false)
-RETURNING id, name, price, is_active;
+returning id, name, price, is_active;
 
 insert into orders (user_id, status)
 values
     (1, 'NEW'),
     (2, 'PAID')
-RETURNING id, user_id, status, created_at;
+returning id, user_id, status, created_at;
 
 select id, name
 from users
@@ -53,13 +53,20 @@ from orders o
          join products p on p.id = oi.product_id
 order by o.id, oi.id;
 
-drop table IF EXISTS inactive_products_archive;
+drop TABLE IF EXISTS inactive_products_archive;
 
 create table inactive_products_archive
 (
-    id           BIGINT generated always as identity primary key,
-    product_id   BIGINT         not null,
-    product_name TEXT           not null,
-    price        numeric(12, 2) not null,
-    archived_at  TIMESTAMPTZ    not null default now()
+    id           bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    product_id   BIGINT         NOT NULL,
+    product_name TEXT           NOT NULL,
+    price        NUMERIC(12, 2) NOT NULL,
+    archived_at  TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
+
+insert into inactive_products_archive (product_id, product_name, price)
+select id, name, price
+from products
+where is_active = false;
+
+select * from inactive_products_archive;
