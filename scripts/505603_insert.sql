@@ -1,72 +1,72 @@
-insert into users (name, email)
-values ('Ivan Petrov', 'ivan.petrov@example.com')
-returning *;
+INSERT INTO users (name, email)
+VALUES ('Ivan Petrov', 'ivan.petrov@example.com')
+RETURNING *;
 
-insert into users (name, email)
-values
+INSERT INTO users (name, email)
+VALUES
     ('Anna Smirnova', 'anna.smirnova@example.com'),
     ('Petr Ivanov', 'petr.ivanov@example.com'),
     ('Olga Sidorova', 'olga.sidorova@example.com')
-returning id, name, email;
+RETURNING id, name, email;
 
-select id, name, email, created_at
-from users
-order by id;
+SELECT id, name, email, created_at
+FROM users
+ORDER BY id;
 
-insert into products (name, price, is_active)
-values
+INSERT INTO products (name, price, is_active)
+VALUES
     ('iPhone 17', 99990.00, true),
     ('MacBook Air M5', 149990.00, true),
     ('AirPods Pro 2', 24990.00, true),
     ('Old Keyboard', 1500.00, false)
-returning id, name, price, is_active;
+RETURNING id, name, price, is_active;
 
-insert into orders (user_id, status)
-values
+INSERT INTO orders (user_id, status)
+VALUES
     (1, 'NEW'),
     (2, 'PAID')
-returning id, user_id, status, created_at;
+RETURNING id, user_id, status, created_at;
 
-select id, name
-from users
-order by id;
+SELECT id, name
+FROM users
+ORDER BY id;
 
-insert into order_items (order_id, product_id, quantity, unit_price)
-values
+INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+VALUES
 	(1,1,1, 99990.00),
 	(1,3,2, 24990.00),
 	(2,2,1, 149990.00)
-	returning *;
+	RETURNING *;
 
-select
-    o.id as order_id,
-    u.name as user_name,
-    p.name as product_name,
+SELECT
+    o.id AS order_id,
+    u.name AS user_name,
+    p.name AS product_name,
     oi.quantity,
     oi.unit_price,
-    oi.quantity * oi.unit_price as line_total,
+    oi.quantity * oi.unit_price AS line_total,
     o.status,
     o.created_at
-from orders o
-         join users u on u.id = o.user_id
-         join order_items oi on oi.order_id = o.id
-         join products p on p.id = oi.product_id
-order by o.id, oi.id;
+FROM orders o
+         JOIN users u ON u.id = o.user_id
+         JOIN order_items oi ON oi.order_id = o.id
+         JOIN products p ON p.id = oi.product_id
+ORDER BY o.id, oi.id;
 
-drop TABLE IF EXISTS inactive_products_archive;
+DROP TABLE IF EXISTS inactive_products_archive;
 
-create table inactive_products_archive
+CREATE TABLE inactive_products_archive
 (
-    id           bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     product_id   BIGINT         NOT NULL,
     product_name TEXT           NOT NULL,
     price        NUMERIC(12, 2) NOT NULL,
     archived_at  TIMESTAMPTZ    NOT NULL DEFAULT now()
 );
 
-insert into inactive_products_archive (product_id, product_name, price)
-select id, name, price
-from products
-where is_active = false;
+INSERT INTO inactive_products_archive (product_id, product_name, price)
+SELECT id, name, price
+FROM products
+WHERE is_active = false;
 
-select * from inactive_products_archive;
+SELECT * FROM inactive_products_archive;
