@@ -2,7 +2,7 @@ SELECT id, name, price
 	FROM products
 	ORDER BY name;
 
-SELECT id, name, priceK
+SELECT id, name, price
 	FROM products
 	WHERE is_active = TRUE
 	ORDER BY price ASC
