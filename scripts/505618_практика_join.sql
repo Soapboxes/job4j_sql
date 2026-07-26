@@ -255,9 +255,7 @@ FROM  car_bodies AS cb
 LEFT JOIN cars AS c ON
 	c.body_id = cb.id
 WHERE c.id IS NULL
-
 	UNION ALL
-
 SELECT
 	'engine' AS detail_type,
 	ce.id AS detail_id,
@@ -266,9 +264,7 @@ FROM car_engines AS ce
 LEFT JOIN cars AS c ON
 	c.engine_id = ce.id
 WHERE c.id IS NULL
-
 	UNION ALL
-
 SELECT
 	'transmission' AS detail_type,
 	ct.id AS detail_id,
@@ -276,16 +272,15 @@ SELECT
 FROM car_transmissions AS ct
 LEFT JOIN cars AS c ON
 	c.transmission_id = ct.id
-WHERE c.id IS NULL
-
-ORDER BY detail_id;
+WHERE c.id IS NULL;
 
 SELECT
 	c.name AS car_name,
 	cb.name AS body_name,
 	ce.name AS engine_name,
 	ct.name AS transmission_name
-FROM cars AS c
+FROM
+	cars AS c
 INNER JOIN car_bodies AS cb ON
 	c.body_id = cb.id
 LEFT JOIN car_engines AS ce ON
